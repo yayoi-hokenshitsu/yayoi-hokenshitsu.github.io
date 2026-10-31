@@ -1,12 +1,9 @@
 /* やよいのキレイ保健室 かんたんチェック 共通の部品
  * - TOOLS: ツールの一覧（TOP のカードと、各ツールの名前）
  * - VIDEOS: 動画の一覧。publishAt を過ぎた動画だけカードに出す（公開予約中の動画は出さない）
- * - COUNTER: 開かれた回数を数える GoatCounter のコード。空なら何も送らない
- *   送るのはページの場所と「チェックした」「動画を開いた」の印だけ。入れた数字は送らない
  */
 (function () {
   var CHANNEL_URL = "https://www.youtube.com/channel/UC_R4JbM6m2IzSkHAtEOCXyQ";
-  var COUNTER = ""; // 例: "yayoi-hokenshitsu"（GoatCounter に登録したら入れる）
 
   var TOOLS = [
     { id: "diet", title: "そのダイエット、急すぎない？", sub: "BMIと、ダイエットのペースが分かります", ready: true },
@@ -29,20 +26,6 @@
     return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
   }
 
-  function count(name) {
-    if (!COUNTER || !window.goatcounter || !window.goatcounter.count) return;
-    try { window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
-  }
-
-  function loadCounter() {
-    if (!COUNTER || location.protocol === "file:" || /^(localhost|127\.)/.test(location.hostname)) return;
-    var s = document.createElement("script");
-    s.async = true;
-    s.src = "https://gc.zgo.at/count.js";
-    s.setAttribute("data-goatcounter", "https://" + COUNTER + ".goatcounter.com/count");
-    document.head.appendChild(s);
-  }
-
   function publishedVideos(toolId) {
     var now = Date.now();
     return VIDEOS.filter(function (v) {
@@ -51,13 +34,13 @@
   }
 
   function videoCard(v) {
-    return '<a class="vcard" href="https://www.youtube.com/watch?v=' + v.id + '" target="_blank" rel="noopener" data-count="video-' + v.id + '">' +
+    return '<a class="vcard" href="https://www.youtube.com/watch?v=' + v.id + '" target="_blank" rel="noopener">' +
       '<img src="https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg" alt="" loading="lazy" width="320" height="180">' +
       '<span>' + esc(v.title) + '</span></a>';
   }
 
   function ytButton(label) {
-    return '<a class="yt-btn" href="' + CHANNEL_URL + '" target="_blank" rel="noopener" data-count="channel">' +
+    return '<a class="yt-btn" href="' + CHANNEL_URL + '" target="_blank" rel="noopener">' +
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>' +
       esc(label) + '</a>';
   }
@@ -82,22 +65,14 @@
   function toolList() {
     return TOOLS.map(function (t) {
       if (t.ready) {
-        return '<a class="tcard" href="' + t.id + '/" data-count="open-' + t.id + '"><b>' + esc(t.title) + '</b><small>' + esc(t.sub) + '</small><i>›</i></a>';
+        return '<a class="tcard" href="' + t.id + '/"><b>' + esc(t.title) + '</b><small>' + esc(t.sub) + '</small><i>›</i></a>';
       }
       return '<div class="tcard soon"><b>' + esc(t.title) + '</b><small>' + esc(t.sub) + '</small><em>準備中</em></div>';
     }).join("");
   }
 
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest && e.target.closest("[data-count]");
-    if (a) count(a.getAttribute("data-count"));
-  });
-
-  loadCounter();
-
   window.YH = {
     TOOLS: TOOLS,
-    count: count,
     renderVideos: renderVideos,
     channelCard: channelCard,
     toolList: toolList
