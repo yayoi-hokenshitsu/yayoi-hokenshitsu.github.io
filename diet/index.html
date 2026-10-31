@@ -143,7 +143,7 @@
       <p class="r-title">いまのBMI</p>
       <div class="big"><span id="bmi"></span><span id="bmi-badge" class="badge"></span></div>
       <div class="scale"><i id="bmi-mark"></i></div>
-      <div class="scale-lab"><span>やせ（18.5未満）</span><span>推奨体重</span><span>肥満（25以上）</span></div>
+      <div class="scale-lab"><span>やせ（18.5未満）</span><span>普通体重</span><span>肥満（25以上）</span></div>
       <p class="sub" id="bmi-sub"></p>
     </div>
 
@@ -181,8 +181,8 @@
     <h3>このチェックについて</h3>
     <ul>
       <li>病気の診断ではありません。持病がある人、治療中の人、妊娠中・授乳中の人は、ダイエットの前にお医者さんに相談してください。</li>
-      <li>BMIの区分は日本肥満学会の基準（18.5未満がやせ、25以上が肥満）です。そのあいだ（学会の言葉では「普通体重」）を、ここでは「推奨体重」としています。BMI22の体重を「標準体重」としています。</li>
-      <li>ペースの目安は、アメリカの国立衛生研究所の指針（週0.5〜0.9kg）と、週1.5kgを超えると胆石が増えるという研究のまとめをもとにしています。どちらも肥満の人の減量の目安なので、推奨体重の範囲の人はもっとゆっくりで十分です。</li>
+      <li>BMIの区分は日本肥満学会の基準（18.5未満がやせ、25以上が肥満）です。そのあいだは「普通体重」です。BMI22の体重を「標準体重」としています。</li>
+      <li>ペースの目安は、アメリカの国立衛生研究所の指針（週0.5〜0.9kg）と、週1.5kgを超えると胆石が増えるという研究のまとめをもとにしています。どちらも肥満の人の減量の目安なので、普通体重の人はもっとゆっくりで十分です。</li>
       <li>筋肉の多い人などは、BMIが体の中身と合わないことがあります。</li>
     </ul>
   </div>
@@ -221,11 +221,11 @@
     $("bmi").textContent = r1(bmi);
     var bb = $("bmi-badge");
     if (bmi < 18.5) { bb.textContent = "やせ"; bb.className = "badge b-blue"; }
-    else if (bmi < 25) { bb.textContent = "推奨体重"; bb.className = "badge b-green"; }
+    else if (bmi < 25) { bb.textContent = "普通体重"; bb.className = "badge b-green"; }
     else { bb.textContent = "肥満"; bb.className = "badge b-orange"; }
     // 目盛り: 15〜30 を 0〜100%
     $("bmi-mark").style.left = clamp((bmi - 15) / 15 * 100, 1, 99) + "%";
-    $("bmi-sub").textContent = "あなたの身長だと、推奨体重は " + r1(lo) + "〜" + r1(hi) + "kg。標準体重（BMI22）は " + r1(std) + "kg です。";
+    $("bmi-sub").textContent = "あなたの身長だと、普通体重は " + r1(lo) + "〜" + r1(hi) + "kg。標準体重（BMI22）は " + r1(std) + "kg です。";
 
     var alerts = [];
     if (bmi < 18.5) {
@@ -242,7 +242,7 @@
       $("pace-mark").style.left = clamp(pace / 2 * 100, 1, 99) + "%";
       var pb = $("pace-badge"), msg, cls, label;
       if (pace <= 0.5) { label = "ゆるやか"; cls = "b-green"; msg = "体にやさしいペースです。<b>続けられるかどうか</b>が、いちばん大事です。"; }
-      else if (pace <= 0.9) { label = "目安の範囲"; cls = "b-yellow"; msg = "肥満の人向けの指針の目安（週0.5〜0.9kg）の中です。推奨体重の範囲なら、<b>もう少しゆっくり</b>でも十分です。"; }
+      else if (pace <= 0.9) { label = "目安の範囲"; cls = "b-yellow"; msg = "肥満の人向けの指針の目安（週0.5〜0.9kg）の中です。普通体重なら、<b>もう少しゆっくり</b>でも十分です。"; }
       else if (pace <= 1.5) { label = "速め"; cls = "b-orange"; msg = "指針の目安より<b>速い</b>ペースです。食べる量が足りなくなりやすいので、たんぱく質をしっかり。"; }
       else { label = "急すぎ"; cls = "b-red"; msg = "週1.5kgを超えると、<b>胆石ができる人がぐっと増える</b>という研究のまとめがあります。数か月後に髪がごっそり抜けることも。"; }
       pb.textContent = label; pb.className = "badge " + cls;
