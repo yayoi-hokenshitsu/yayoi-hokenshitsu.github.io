@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ダイエットのペース診断｜やよいのキレイ保健室</title>
+<meta name="description" content="身長・体重・目標・期間を入れると、BMIと、そのダイエットが急すぎないかが分かるかんたんチェックです。入れた数字はどこにも送られません。">
+<link rel="icon" href="../img/yayoi-icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff6f8;
+    --card: #ffffff;
+    --line: #f6d3dd;
+    --text: #4a3a3f;
+    --muted: #8a7479;
+    --pink: #f0628c;
+    --pink-soft: #ffe3ec;
+    --green: #2fa36b;
+    --green-soft: #e3f6ec;
+    --yellow: #e0a100;
+    --yellow-soft: #fff4d6;
+    --orange: #ef7d22;
+    --orange-soft: #ffeadb;
+    --red: #e0393e;
+    --red-soft: #ffe1e1;
+    --blue: #3f7fd8;
+    --blue-soft: #e4efff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Hiragino Sans", sans-serif;
+    line-height: 1.7;
+    word-break: auto-phrase;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { text-align: center; margin: 4px 0 20px; }
+  .brand { display: inline-block; font-size: 13px; letter-spacing: .08em; color: var(--pink); background: var(--pink-soft); border-radius: 999px; padding: 2px 14px; font-weight: 700; }
+  h1 { font-size: clamp(24px, 6.4vw, 32px); margin: 12px 0 4px; font-weight: 800; }
+  h1 span { color: var(--pink); }
+  .nb { display: inline-block; }
+  .lead { color: var(--muted); font-size: 15px; margin: 0; }
+  .card { background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 18px 16px; margin: 0 0 14px; box-shadow: 0 4px 14px rgba(240,98,140,.08); }
+  .field { margin: 0 0 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-weight: 800; font-size: 15px; margin: 0 0 6px; }
+  .field label small { color: var(--muted); font-weight: 500; font-size: 12px; margin-left: 6px; }
+  .inrow { display: flex; align-items: center; gap: 8px; }
+  .inrow input { flex: 1; min-width: 0; font-family: inherit; font-size: 20px; font-weight: 800; color: var(--text); padding: 10px 14px; border-radius: 14px; border: 1.5px solid var(--line); background: #fffafb; }
+  .inrow input:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px rgba(240,98,140,.18); }
+  .inrow span { font-weight: 800; color: var(--muted); min-width: 36px; }
+  .err { color: var(--red); font-size: 13px; font-weight: 700; margin: 6px 0 0; display: none; }
+  button { font-family: inherit; }
+  .go { display: block; width: 100%; margin: 6px 0 8px; padding: 16px; border: 0; border-radius: 18px; background: var(--pink); color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(240,98,140,.3); }
+  .go:hover { filter: brightness(1.05); }
+  .safe { text-align: center; color: var(--muted); font-size: 13px; margin: 0; }
+  #result { display: none; margin-top: 24px; }
+  #result h2 { font-size: 21px; text-align: center; margin: 0 0 14px; }
+  .r-title { font-size: 14px; font-weight: 800; color: var(--muted); margin: 0 0 4px; }
+  .big { font-size: 34px; font-weight: 800; line-height: 1.2; }
+  .big small { font-size: 16px; color: var(--muted); margin-left: 4px; }
+  .badge { display: inline-block; font-size: 14px; font-weight: 800; border-radius: 999px; padding: 3px 12px; margin-left: 8px; vertical-align: middle; }
+  .b-blue { background: var(--blue-soft); color: var(--blue); }
+  .b-green { background: var(--green-soft); color: var(--green); }
+  .b-yellow { background: var(--yellow-soft); color: var(--yellow); }
+  .b-orange { background: var(--orange-soft); color: var(--orange); }
+  .b-red { background: var(--red-soft); color: var(--red); }
+  .scale { position: relative; height: 14px; border-radius: 999px; margin: 14px 0 6px; background: linear-gradient(90deg, var(--blue) 0 22%, var(--green) 22% 62%, var(--orange) 62% 100%); opacity: .85; }
+  .scale i { position: absolute; top: -6px; width: 6px; height: 26px; border-radius: 4px; background: var(--text); transform: translateX(-50%); transition: left .8s ease; }
+  .scale-lab { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .pace { position: relative; height: 14px; border-radius: 999px; margin: 14px 0 6px; background: linear-gradient(90deg, var(--green) 0 25%, var(--yellow) 25% 45%, var(--orange) 45% 75%, var(--red) 75% 100%); opacity: .85; }
+  .pace i { position: absolute; top: -6px; width: 6px; height: 26px; border-radius: 4px; background: var(--text); transform: translateX(-50%); transition: left .8s ease; }
+  .msg { font-size: 15px; margin: 10px 0 0; }
+  .msg b { color: var(--pink); }
+  .sub { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .alert { border-radius: 16px; padding: 12px 14px; font-size: 14px; font-weight: 700; margin: 0 0 14px; }
+  .alert.red { background: var(--red-soft); color: #9b2226; }
+  .alert.blue { background: var(--blue-soft); color: #234d8a; }
+  .yayoi { display: flex; gap: 12px; align-items: flex-end; margin: 18px 0 14px; }
+  .yayoi img { width: 96px; height: auto; flex: none; }
+  .bubble { position: relative; background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: 12px 14px; font-size: 14px; font-weight: 700; }
+  .bubble::before { content: ""; position: absolute; left: -9px; bottom: 18px; border: 8px solid transparent; border-right-color: var(--line); border-left: 0; }
+  .bubble p { margin: 0 0 6px; }
+  .bubble p:last-child { margin: 0; }
+  .channel { margin: 22px 0 0; padding: 18px 16px; border-radius: 20px; background: linear-gradient(160deg, #ffe3ec 0%, #fff 70%); border: 1.5px solid var(--line); text-align: center; }
+  .ch-head { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0 0 10px; }
+  .ch-icon { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(240,98,140,.25); }
+  .ch-name { font-size: 18px; font-weight: 800; text-align: left; line-height: 1.3; }
+  .ch-name small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
+  .yt-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; background: #ff0033; color: #fff; font-weight: 800; padding: 12px 20px; border-radius: 999px; font-size: 16px; }
+  .yt-btn svg { width: 22px; height: 22px; }
+  .notes { margin: 24px 0 0; font-size: 12px; color: var(--muted); }
+  .notes h3 { font-size: 13px; margin: 0 0 6px; color: var(--text); }
+  .notes ul { padding-left: 18px; margin: 0 0 10px; }
+  .notes a { color: var(--muted); }
+  .again { display: block; margin: 14px auto 0; background: none; border: 1.5px solid var(--line); color: var(--muted); border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">やよいのキレイ保健室</span>
+    <h1>そのダイエット、<br class="sp"><span>急すぎない？</span></h1>
+    <p class="lead"><span class="nb">身長と体重を入れるだけで、</span><span class="nb">BMIとペースが分かります。</span></p>
+  </header>
+
+  <form id="f" class="card" novalidate>
+    <div class="field">
+      <label for="h">身長</label>
+      <div class="inrow"><input id="h" inputmode="decimal" placeholder="例 158" autocomplete="off"><span>cm</span></div>
+      <p class="err" id="e-h">100〜220の数字を入れてください</p>
+    </div>
+    <div class="field">
+      <label for="w">いまの体重</label>
+      <div class="inrow"><input id="w" inputmode="decimal" placeholder="例 55" autocomplete="off"><span>kg</span></div>
+      <p class="err" id="e-w">25〜250の数字を入れてください</p>
+    </div>
+    <div class="field">
+      <label for="t">目標の体重<small>なければ空のままでOK</small></label>
+      <div class="inrow"><input id="t" inputmode="decimal" placeholder="例 50" autocomplete="off"><span>kg</span></div>
+      <p class="err" id="e-t">いまの体重より少ない数字を入れてください</p>
+    </div>
+    <div class="field">
+      <label for="n">何週間で落としたい？<small>1か月＝約4週</small></label>
+      <div class="inrow"><input id="n" inputmode="decimal" placeholder="例 8" autocomplete="off"><span>週</span></div>
+      <p class="err" id="e-n">1〜104の数字を入れてください</p>
+    </div>
+  </form>
+  <button class="go" id="go" type="button">チェックする</button>
+  <p class="safe">入れた数字は、このページの中だけで計算します。どこにも送られません。</p>
+
+  <section id="result" aria-live="polite">
+    <h2>チェックの結果</h2>
+    <div id="alerts"></div>
+
+    <div class="card">
+      <p class="r-title">いまのBMI</p>
+      <div class="big"><span id="bmi"></span><span id="bmi-badge" class="badge"></span></div>
+      <div class="scale"><i id="bmi-mark"></i></div>
+      <div class="scale-lab"><span>やせ（18.5未満）</span><span>ふつう</span><span>肥満（25以上）</span></div>
+      <p class="sub" id="bmi-sub"></p>
+    </div>
+
+    <div class="card" id="pace-card">
+      <p class="r-title">あなたのダイエットのペース</p>
+      <div class="big"><span id="pace"></span><small>kg／週</small><span id="pace-badge" class="badge"></span></div>
+      <div class="pace"><i id="pace-mark"></i></div>
+      <div class="scale-lab"><span>0</span><span>0.5</span><span>1</span><span>1.5</span><span>2kg以上</span></div>
+      <p class="msg" id="pace-msg"></p>
+      <p class="sub" id="pace-sub"></p>
+    </div>
+
+    <div class="yayoi">
+      <img src="../img/yayoi-ok.png" alt="やよい" width="96">
+      <div class="bubble">
+        <p>最初の1〜2週間でストンと落ちる体重は、ほとんどが<b style="color:var(--pink)">水分</b>なんです。</p>
+        <p>だから、戻ってもあせらなくて大丈夫。続けられるペースがいちばんです♡</p>
+      </div>
+    </div>
+
+    <div class="channel">
+      <div class="ch-head">
+        <img class="ch-icon" src="../img/yayoi-icon.jpg" alt="やよいのキレイ保健室のアイコン" width="60" height="60">
+        <div class="ch-name">やよいのキレイ保健室<small>健康と美容を、漫画で楽しく</small></div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/channel/UC_R4JbM6m2IzSkHAtEOCXyQ" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>
+        YouTubeで動画を見る
+      </a>
+    </div>
+    <button class="again" id="again" type="button">入れ直す</button>
+  </section>
+
+  <div class="notes">
+    <h3>このチェックについて</h3>
+    <ul>
+      <li>病気の診断ではありません。持病がある人、治療中の人、妊娠中・授乳中の人は、ダイエットの前にお医者さんに相談してください。</li>
+      <li>BMIの区分は日本肥満学会の基準（18.5未満がやせ、25以上が肥満）です。BMI22の体重を「標準体重」としています。</li>
+      <li>ペースの目安は、アメリカの国立衛生研究所の指針（週0.5〜0.9kg）と、週1.5kgを超えると胆石が増えるという研究のまとめをもとにしています。どちらも肥満の人の減量の目安なので、ふつう体重の人はもっとゆっくりで十分です。</li>
+      <li>筋肉の多い人などは、BMIが体の中身と合わないことがあります。</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) {
+    var v = $(id).value.trim().replace(/[０-９．]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/,/g, "");
+    if (v === "") return null;
+    var n = Number(v);
+    return isFinite(n) ? n : NaN;
+  };
+  var r1 = function (x) { return (Math.round(x * 10) / 10).toFixed(1); };
+  var clamp = function (x, a, b) { return Math.max(a, Math.min(b, x)); };
+
+  function showErr(id, on) { $("e-" + id).style.display = on ? "block" : "none"; }
+
+  function check() {
+    var h = num("h"), w = num("w"), t = num("t"), n = num("n");
+    var ok = true;
+    var bad = function (id, cond) { showErr(id, cond); if (cond) ok = false; };
+    bad("h", !(h >= 100 && h <= 220));
+    bad("w", !(w >= 25 && w <= 250));
+    var hasGoal = t !== null || n !== null;
+    bad("t", hasGoal && !(t > 0 && w > 0 && t < w));
+    bad("n", hasGoal && !(n >= 1 && n <= 104));
+    if (!ok) return;
+
+    var m = h / 100;
+    var bmi = w / (m * m);
+    var std = 22 * m * m;
+    var lo = 18.5 * m * m, hi = 25 * m * m;
+
+    $("bmi").textContent = r1(bmi);
+    var bb = $("bmi-badge");
+    if (bmi < 18.5) { bb.textContent = "やせ"; bb.className = "badge b-blue"; }
+    else if (bmi < 25) { bb.textContent = "ふつう"; bb.className = "badge b-green"; }
+    else { bb.textContent = "肥満"; bb.className = "badge b-orange"; }
+    // 目盛り: 15〜30 を 0〜100%
+    $("bmi-mark").style.left = clamp((bmi - 15) / 15 * 100, 1, 99) + "%";
+    $("bmi-sub").textContent = "あなたの身長だと、ふつう体重は " + r1(lo) + "〜" + r1(hi) + "kg。標準体重（BMI22）は " + r1(std) + "kg です。";
+
+    var alerts = [];
+    if (bmi < 18.5) {
+      alerts.push('<div class="alert blue">いまの体重は「やせ」の区分です。これ以上へらす必要は低いと考えられます。日本肥満学会は、若い女性のやせが骨や生理に響くおそれを注意しています。</div>');
+    }
+
+    var pc = $("pace-card");
+    if (hasGoal) {
+      pc.style.display = "";
+      var loss = w - t;
+      var pace = loss / n;
+      var tb = t / (m * m);
+      $("pace").textContent = r1(pace);
+      $("pace-mark").style.left = clamp(pace / 2 * 100, 1, 99) + "%";
+      var pb = $("pace-badge"), msg, cls, label;
+      if (pace <= 0.5) { label = "ゆるやか"; cls = "b-green"; msg = "体にやさしいペースです。<b>続けられるかどうか</b>が、いちばん大事です。"; }
+      else if (pace <= 0.9) { label = "目安の範囲"; cls = "b-yellow"; msg = "肥満の人向けの指針の目安（週0.5〜0.9kg）の中です。ふつう体重なら、<b>もう少しゆっくり</b>でも十分です。"; }
+      else if (pace <= 1.5) { label = "速め"; cls = "b-orange"; msg = "指針の目安より<b>速い</b>ペースです。食べる量が足りなくなりやすいので、たんぱく質をしっかり。"; }
+      else { label = "急すぎ"; cls = "b-red"; msg = "週1.5kgを超えると、<b>胆石ができる人がぐっと増える</b>という研究のまとめがあります。数か月後に髪がごっそり抜けることも。"; }
+      pb.textContent = label; pb.className = "badge " + cls;
+      $("pace-msg").innerHTML = msg;
+      var weeksAt05 = Math.ceil(loss / 0.5);
+      var sub = loss.toFixed(1).replace(/\.0$/, "") + "kgへらすなら、週0.5kgのペースで約" + weeksAt05 + "週（約" + Math.max(1, Math.round(weeksAt05 / 4.3)) + "か月）です。";
+      $("pace-sub").textContent = sub;
+      if (tb < 18.5 && bmi >= 18.5) {
+        alerts.push('<div class="alert red">目標の体重はBMI ' + r1(tb) + 'で、「やせ」の区分に入ります。目標を見直してみてください。</div>');
+      }
+    } else {
+      pc.style.display = "none";
+    }
+    $("alerts").innerHTML = alerts.join("");
+
+    var res = $("result");
+    res.style.display = "block";
+    res.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("go").addEventListener("click", check);
+  $("f").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+  $("again").addEventListener("click", function () {
+    $("result").style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    $("h").focus();
+  });
+})();
+</script>
+</body>
+</html>
