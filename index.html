@@ -3,22 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>やよいのキレイ保健室｜かんたんチェック</title>
+<title>かんたんチェック｜やよいのキレイ保健室</title>
+<meta name="description" content="やよいのキレイ保健室のかんたんチェック。ダイエットのペースなど、健康と美容の目安が数字で分かります。入れた数字はどこにも送られません。">
 <link rel="icon" href="img/yayoi-icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
 <style>
-  body { margin: 0; background: #fff6f8; color: #4a3a3f; font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", sans-serif; line-height: 1.7; }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 32px 16px; text-align: center; }
-  img { width: 88px; height: 88px; border-radius: 50%; }
-  h1 { font-size: 22px; margin: 12px 0 20px; }
-  a.item { display: block; text-align: left; background: #fff; border: 1.5px solid #f6d3dd; border-radius: 18px; padding: 14px 16px; margin: 0 0 12px; color: inherit; text-decoration: none; font-weight: 700; }
-  a.item small { display: block; color: #8a7479; font-weight: 500; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 28px 16px 56px; }
+  header { text-align: center; margin: 0 0 22px; }
+  header img { width: 96px; height: 96px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 14px rgba(240,98,140,.25); }
+  .brand { display: inline-block; font-size: 13px; color: var(--pink); background: var(--pink-soft); border-radius: 999px; padding: 2px 14px; font-weight: 700; margin: 12px 0 0; }
+  h1 { font-size: clamp(24px, 6.4vw, 30px); margin: 8px 0 4px; font-weight: 800; }
+  .lead { color: var(--muted); font-size: 15px; margin: 0; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <img src="img/yayoi-icon.jpg" alt="やよい">
-  <h1>やよいのキレイ保健室<br>かんたんチェック</h1>
-  <a class="item" href="diet/">そのダイエット、急すぎない？<small>BMIとダイエットのペースが分かります</small></a>
+  <header>
+    <img src="img/yayoi-icon.jpg" alt="やよい" width="96" height="96">
+    <div><span class="brand">やよいのキレイ保健室</span></div>
+    <h1>かんたんチェック</h1>
+    <p class="lead"><span class="nb">健康と美容の目安が、</span><span class="nb">数字で分かります。</span></p>
+  </header>
+
+  <div id="tools"></div>
+  <div id="ch"></div>
+
+  <p class="foot">入れた数字は、それぞれのページの中だけで計算します。どこにも送られません。<br>病気の診断ではありません。</p>
 </div>
+<script src="assets/common.js"></script>
+<script>
+  document.getElementById("tools").innerHTML = YH.toolList();
+  document.getElementById("ch").innerHTML = YH.channelCard("");
+</script>
 </body>
 </html>
