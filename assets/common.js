@@ -9,7 +9,7 @@
     { id: "diet", title: "そのダイエット、急すぎない？", sub: "BMIと、ダイエットのペースが分かります", ready: true },
     { id: "protein", title: "1日に必要なたんぱく質", sub: "体重から、1日の目安の量が分かります", ready: false },
     { id: "sugar", title: "その飲み物、角砂糖何個分？", sub: "いつもの飲み物の砂糖を、角砂糖で数えます", ready: false },
-    { id: "water", title: "1日に飲む水の目安", sub: "体重と食事から、飲む量の目安が分かります", ready: false },
+    { id: "water", title: "その水、足りてる？飲みすぎ？", sub: "飲む量とおしっこの色から、足りているかが分かります", ready: true },
     { id: "caffeine", title: "カフェイン、とりすぎてない？", sub: "コーヒーやお茶のカフェインを合計します", ready: false },
     { id: "undou", title: "運動、足りてる？", sub: "1週間の運動を、世界の目安とくらべます", ready: false },
     { id: "hiyakedome", title: "日焼け止め、足りてる？", sub: "顔に塗るときの、ちょうどいい量が分かります", ready: false },
