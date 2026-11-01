@@ -8,7 +8,7 @@
   var TOOLS = [
     { id: "diet", title: "そのダイエット、急すぎない？", sub: "BMIと、ダイエットのペースが分かります", ready: true },
     { id: "protein", title: "1日に必要なたんぱく質", sub: "体重から、1日の目安の量が分かります", ready: false },
-    { id: "sugar", title: "その飲み物、角砂糖何個分？", sub: "いつもの飲み物の砂糖を、角砂糖で数えます", ready: false },
+    { id: "sugar", title: "その飲み物、角砂糖何個分？", sub: "いつもの飲み物の砂糖を、角砂糖で数えます", ready: true },
     { id: "water", title: "その水、足りてる？飲みすぎ？", sub: "飲む量とおしっこの色から、足りているかが分かります", ready: true },
     { id: "caffeine", title: "カフェイン、とりすぎてない？", sub: "コーヒーやお茶のカフェインを合計します", ready: false },
     { id: "undou", title: "運動、足りてる？", sub: "1週間の運動を、世界の目安とくらべます", ready: false },

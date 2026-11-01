@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>砂糖のチェック｜やよいのキレイ保健室</title>
+<meta name="description" content="いつもの飲み物を選ぶと、1日に飲み物からとっている砂糖が、角砂糖何個分かが分かるかんたんチェックです。入れた答えはどこにも送られません。">
+<link rel="icon" href="../img/yayoi-icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+  :root {
+    --bg: #fff6f8;
+    --card: #ffffff;
+    --line: #f6d3dd;
+    --text: #4a3a3f;
+    --muted: #8a7479;
+    --pink: #f0628c;
+    --pink-soft: #ffe3ec;
+    --green: #2fa36b;
+    --green-soft: #e3f6ec;
+    --yellow: #e0a100;
+    --yellow-soft: #fff4d6;
+    --orange: #ef7d22;
+    --orange-soft: #ffeadb;
+    --red: #e0393e;
+    --red-soft: #ffe1e1;
+    --blue: #3f7fd8;
+    --blue-soft: #e4efff;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { text-align: center; margin: 4px 0 20px; }
+  .brand { display: inline-block; font-size: 13px; letter-spacing: .08em; color: var(--pink); background: var(--pink-soft); border-radius: 999px; padding: 2px 14px; font-weight: 700; }
+  h1 { font-size: clamp(24px, 6.4vw, 32px); margin: 12px 0 4px; font-weight: 800; }
+  h1 span { color: var(--pink); }
+  .lead { color: var(--muted); font-size: 15px; margin: 0; }
+  .card { background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 18px 16px; margin: 0 0 14px; box-shadow: 0 4px 14px rgba(240,98,140,.08); }
+  .q { font-weight: 800; font-size: 16px; margin: 0 0 4px; }
+  .q b { color: var(--pink); margin-right: 4px; }
+  .hint { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+  .err { color: var(--red); font-size: 13px; font-weight: 700; margin: 8px 0 0; display: none; }
+  button { font-family: inherit; }
+
+  /* 杯数を数える */
+  .count { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px dashed var(--line); }
+  .count:first-of-type { border-top: 0; }
+  .count .ic { width: 34px; display: flex; justify-content: center; flex: none; }
+  .count .nm { flex: 1; font-weight: 700; font-size: 14px; line-height: 1.4; }
+  .count .nm small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; }
+  .step { display: flex; align-items: center; gap: 6px; flex: none; }
+  .step button { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--line); background: #fffafb; color: var(--pink); font-size: 22px; font-weight: 800; line-height: 1; cursor: pointer; }
+  .step output { min-width: 28px; text-align: center; font-size: 20px; font-weight: 800; }
+  .total { margin: 10px 0 0; padding: 10px 14px; border-radius: 14px; background: var(--pink-soft); font-weight: 800; display: flex; justify-content: space-between; align-items: baseline; }
+  .total span:last-child { font-size: 22px; color: var(--pink); }
+
+  /* 選ぶボタン */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1.5px solid var(--line); background: #fffafb; color: var(--text); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: left; }
+  .chip[aria-pressed="true"] { background: var(--pink); border-color: var(--pink); color: #fff; }
+  .chips.col { flex-direction: column; }
+  .chips.col .chip { border-radius: 14px; }
+
+  /* おしっこの色 */
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .sw { border: 2px solid transparent; background: none; border-radius: 14px; padding: 4px 2px 6px; cursor: pointer; font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .sw i { display: block; height: 44px; border-radius: 10px; margin: 0 0 4px; border: 1px solid rgba(0,0,0,.08); }
+  .sw[aria-pressed="true"] { border-color: var(--pink); background: var(--pink-soft); }
+  .unknown { margin: 8px 0 0; }
+
+  .go { display: block; width: 100%; margin: 6px 0 8px; padding: 16px; border: 0; border-radius: 18px; background: var(--pink); color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(240,98,140,.3); }
+  .go:hover { filter: brightness(1.05); }
+  .safe { text-align: center; color: var(--muted); font-size: 13px; margin: 0; }
+
+  #result { display: none; margin-top: 24px; }
+  #result h2 { font-size: 21px; text-align: center; margin: 0 0 14px; }
+  .r-title { font-size: 14px; font-weight: 800; color: var(--muted); margin: 0 0 4px; }
+  .big { font-size: 30px; font-weight: 800; line-height: 1.3; }
+  .big small { font-size: 16px; color: var(--muted); margin-left: 4px; }
+  .badge { display: inline-block; font-size: 14px; font-weight: 800; border-radius: 999px; padding: 3px 12px; margin-left: 8px; vertical-align: middle; }
+  .b-blue { background: var(--blue-soft); color: var(--blue); }
+  .b-green { background: var(--green-soft); color: var(--green); }
+  .b-yellow { background: var(--yellow-soft); color: var(--yellow); }
+  .b-orange { background: var(--orange-soft); color: var(--orange); }
+  .b-red { background: var(--red-soft); color: var(--red); }
+  .verdict { font-size: 26px; font-weight: 800; line-height: 1.3; margin: 2px 0 0; }
+  .verdict.c-green { color: var(--green); }
+  .verdict.c-yellow { color: var(--yellow); }
+  .verdict.c-orange { color: var(--orange); }
+  .verdict.c-red { color: var(--red); }
+  .bar { position: relative; height: 14px; border-radius: 999px; margin: 14px 0 6px; background: linear-gradient(90deg, #cfe4ff, #3f7fd8); }
+  .bar i { position: absolute; top: -6px; width: 6px; height: 26px; border-radius: 4px; background: var(--text); transform: translateX(-50%); transition: left .8s ease; }
+  .bar b { position: absolute; top: -3px; width: 2px; height: 20px; background: #fff; transform: translateX(-50%); }
+  .bar-lab { position: relative; height: 18px; font-size: 11px; color: var(--muted); }
+  .bar-lab span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .msg { font-size: 15px; margin: 10px 0 0; }
+  .msg b { color: var(--pink); }
+  .sub { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .alert { border-radius: 16px; padding: 12px 14px; font-size: 14px; font-weight: 700; margin: 0 0 14px; }
+  .alert.red { background: var(--red-soft); color: #9b2226; }
+  .alert.blue { background: var(--blue-soft); color: #234d8a; }
+  .alert.orange { background: var(--orange-soft); color: #8a4310; }
+  .tips { margin: 0; padding-left: 20px; font-size: 14px; }
+  .tips li { margin: 0 0 6px; }
+  .tips li:last-child { margin: 0; }
+  .yayoi { display: flex; gap: 12px; align-items: flex-end; margin: 18px 0 14px; }
+  .yayoi img { width: 96px; height: auto; flex: none; }
+  .bubble { position: relative; background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: 12px 14px; font-size: 14px; font-weight: 700; }
+  .bubble::before { content: ""; position: absolute; left: -9px; bottom: 18px; border: 8px solid transparent; border-right-color: var(--line); border-left: 0; }
+  .bubble p { margin: 0 0 6px; }
+  .bubble p:last-child { margin: 0; }
+  .notes { margin: 24px 0 0; font-size: 12px; color: var(--muted); }
+  .notes h3 { font-size: 13px; margin: 0 0 6px; color: var(--text); }
+  .notes ul { padding-left: 18px; margin: 0 0 10px; }
+  .notes a { color: var(--muted); }
+  .again { display: block; margin: 14px auto 0; background: none; border: 1.5px solid var(--line); color: var(--muted); border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; }
+  .custom { margin: 10px 0 0; padding: 12px; border-radius: 14px; background: #fffafb; border: 1.5px dashed var(--line); }
+  .custom p { margin: 0 0 8px; font-size: 13px; font-weight: 800; }
+  .custom .row { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; flex-wrap: wrap; }
+  .custom label { font-size: 12px; color: var(--muted); font-weight: 700; display: flex; align-items: center; gap: 4px; }
+  .custom input { width: 84px; font-family: inherit; font-size: 18px; font-weight: 800; color: var(--text); padding: 6px 8px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; }
+  .custom input:focus { outline: none; border-color: var(--pink); }
+  .custom input::placeholder { color: #d5c3c8; font-weight: 500; font-size: 14px; }
+  .cubes { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0 4px; }
+  .cubes i { width: 22px; height: 22px; border-radius: 4px; background: #fff; border: 1.5px solid #d6c4ca; box-shadow: inset -3px -3px 0 rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.08); }
+  .cubes i.half { width: 11px; }
+  .cubes i.over { border-color: var(--orange); background: var(--orange-soft); }
+  .cubes em { font-style: normal; font-weight: 800; color: var(--muted); align-self: center; margin-left: 4px; }
+  .meter { position: relative; height: 14px; border-radius: 999px; margin: 18px 0 6px; background: linear-gradient(90deg, var(--green) 0 25%, var(--yellow) 25% 50%, var(--orange) 50% 100%); opacity: .85; }
+  .meter i { position: absolute; top: -6px; width: 6px; height: 26px; border-radius: 4px; background: var(--text); transform: translateX(-50%); transition: left .8s ease; }
+  .meter-lab { position: relative; height: 30px; font-size: 11px; color: var(--muted); }
+  .meter-lab span { position: absolute; transform: translateX(-50%); white-space: nowrap; text-align: center; line-height: 1.3; }
+</style>
+</head>
+<body>
+<nav class="topbar"><div class="in"><a href="/"><img src="../img/yayoi-icon.jpg" alt="" width="30" height="30">やよいのキレイ保健室</a><a class="back" href="/">チェックの一覧へ</a></div></nav>
+<div class="wrap">
+  <header>
+    <span class="brand">やよいのキレイ保健室</span>
+    <h1>その飲み物、<br><span>角砂糖何個分？</span></h1>
+    <p class="lead"><span class="nb">きのう飲んだものを選ぶと、</span><span class="nb">飲み物の砂糖を角砂糖で数えます。</span></p>
+  </header>
+
+  <div class="card">
+    <p class="q"><b>1</b>きのう飲んだ甘い飲み物は？</p>
+    <p class="hint">無糖のお茶・コーヒー・水は、0個なので入れなくてOK</p>
+    <div class="count">
+      <span class="nm">甘いカフェオレ・カフェラテ<small>ペットボトル 500mL</small></span>
+      <span class="step"><button type="button" data-k="cafe" data-d="-1" aria-label="1本へらす">−</button><output id="n-cafe">0</output><button type="button" data-k="cafe" data-d="1" aria-label="1本ふやす">＋</button></span>
+    </div>
+    <div class="count">
+      <span class="nm">「微糖」のコーヒー・カフェオレ<small>ペットボトル 500mL（多いときで数えます）</small></span>
+      <span class="step"><button type="button" data-k="bitou" data-d="-1" aria-label="1本へらす">−</button><output id="n-bitou">0</output><button type="button" data-k="bitou" data-d="1" aria-label="1本ふやす">＋</button></span>
+    </div>
+    <div class="count">
+      <span class="nm">果汁100％のジュース<small>コップ1杯 200mL</small></span>
+      <span class="step"><button type="button" data-k="juice" data-d="-1" aria-label="1杯へらす">−</button><output id="n-juice">0</output><button type="button" data-k="juice" data-d="1" aria-label="1杯ふやす">＋</button></span>
+    </div>
+    <div class="count">
+      <span class="nm">飲み物に入れたはちみつ<small>小さじ1杯</small></span>
+      <span class="step"><button type="button" data-k="honey" data-d="-1" aria-label="1杯へらす">−</button><output id="n-honey">0</output><button type="button" data-k="honey" data-d="1" aria-label="1杯ふやす">＋</button></span>
+    </div>
+    <div class="custom">
+      <p>ほかの飲み物は、ラベルの裏の「糖類」で</p>
+      <div class="row">
+        <label>100mLあたり糖類<input id="c-g" inputmode="decimal" placeholder="例 9">g</label>
+        <label>量<input id="c-ml" inputmode="numeric" placeholder="例 500">mL</label>
+        <label>×<input id="c-n" inputmode="numeric" placeholder="1" style="width:56px">本</label>
+      </div>
+      <p style="margin:0;font-weight:500;color:var(--muted);font-size:12px">「糖類」がなければ「炭水化物」で。牛乳入りの飲み物は、牛乳の糖も入るので少し多めに出ます</p>
+    </div>
+    <div class="total"><span>合計</span><span id="total">0個</span></div>
+    <p class="err" id="e-none">飲んだものを1つ以上入れてください</p>
+  </div>
+
+  <button class="go" id="go" type="button">チェックする</button>
+  <p class="safe">入れた答えは、このページの中だけで計算します。どこにも送られません。</p>
+
+  <section id="result" aria-live="polite">
+    <h2>チェックの結果</h2>
+    <div class="card">
+      <p class="r-title">きのうの飲み物の砂糖</p>
+      <div class="big">角砂糖 <span id="r-n"></span><small>個分</small></div>
+      <div class="cubes" id="cubes" aria-hidden="true"></div>
+      <div class="meter"><i id="r-mark"></i></div>
+      <div class="meter-lab"><span style="left:0;transform:none">0個</span><span style="left:25%">5個<br>できれば</span><span style="left:50%">10個<br>上限</span><span style="right:0;left:auto;transform:none">20個</span></div>
+      <p class="verdict" id="verdict"></p>
+      <p class="msg" id="v-msg"></p>
+      <p class="sub">5個・10個は、WHO（世界保健機関）の砂糖の目安を角砂糖（1個5g）に直したものです。食べ物の砂糖は入っていません。</p>
+    </div>
+
+    <div class="yayoi">
+      <img src="../img/yayoi-ok.png" alt="やよい" width="96">
+      <div class="bubble"><p>好きな1本を、やめなくていい方法は<b style="color:var(--pink)">動画</b>で見てね♡</p></div>
+    </div>
+
+    <div id="videos"></div>
+    <button class="again" id="again" type="button">入れ直す</button>
+  </section>
+
+  <p style="text-align:center;margin:20px 0 0"><a href="/" style="color:var(--pink);font-weight:800">‹ ほかのチェックを見る</a></p>
+  <div class="notes">
+    <h3>このチェックについて</h3>
+    <ul>
+      <li>病気の診断ではありません。糖尿病などで食事の指示を受けている人は、その指示を優先してください。</li>
+      <li>目安は、WHO（世界保健機関）の2015年の指針です。砂糖など（あとから足した糖と、はちみつ・シロップ・果汁の糖）は、1日のエネルギーの10％未満（約50g＝角砂糖10個）、できれば5％未満（約25g＝5個）。牛乳や果物にもともと入っている糖は数えません。<a href="https://www.who.int/news/item/04-03-2015-who-calls-on-countries-to-reduce-sugars-intake-among-adults-and-children" target="_blank" rel="noopener">WHO の発表</a></li>
+      <li>角砂糖は1個5gで数えています（お店の角砂糖は1個3〜4gのものも多いので、実際の個数はもう少し多くなります）。</li>
+      <li>甘いカフェオレは、甘いカフェラテの炭水化物（100mLあたり5.5g）から、同じ会社の無糖のラテ（1.0g）を引いた、あとから足した砂糖（500mLで約22g＝角砂糖約4個）で数えています。商品によってちがいます。</li>
+      <li>「微糖」は、食品表示のきまりで100mLあたり糖類2.5g以下の飲み物です。いちばん多いときの量（500mLで12.5g＝角砂糖2個半）で数えています。</li>
+      <li>果汁100％のジュースは100mLあたり約9g（コップ1杯で角砂糖3個半）、はちみつは小さじ1杯（約7g）で糖が約5.6g（角砂糖約1個）として数えています。</li>
+    </ul>
+  </div>
+</div>
+
+<script src="../assets/common.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var CUBE = 5; // g
+  var C = { cafe: 4, bitou: 2.5, juice: 3.5, honey: 1 }; // 角砂糖の個数（カフェオレの回と同じ数）
+  var n = { cafe: 0, bitou: 0, juice: 0, honey: 0 };
+  var num = function (id) {
+    var v = $(id).value.trim().replace(/[０-９．]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+    var x = Number(v); return v === "" || !isFinite(x) || x < 0 ? 0 : x;
+  };
+  function grams() {
+    var g = 0;
+    for (var k in n) g += n[k] * C[k] * CUBE;
+    var cg = num("c-g"), cml = num("c-ml"), cn = $("c-n").value.trim() === "" ? (cg && cml ? 1 : 0) : num("c-n");
+    g += Math.min(cg, 100) / 100 * Math.min(cml, 3000) * Math.min(cn, 20);
+    return g;
+  }
+  var cubes = function (g) { return Math.round(g / CUBE * 2) / 2; }; // 半個きざみ
+  var fmt = function (c) { return String(c).replace(/\.5$/, "個半").replace(/^(\d+)$/, "$1個").replace(/^0個半$/, "半個"); };
+  function refresh() {
+    for (var k in n) $("n-" + k).textContent = n[k];
+    $("total").textContent = "角砂糖 " + fmt(cubes(grams()));
+  }
+  document.querySelectorAll(".step button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var k = b.getAttribute("data-k");
+      n[k] = Math.max(0, Math.min(20, n[k] + Number(b.getAttribute("data-d"))));
+      refresh(); $("e-none").style.display = "none";
+    });
+  });
+  ["c-g", "c-ml", "c-n"].forEach(function (id) { $(id).addEventListener("input", function () { refresh(); $("e-none").style.display = "none"; }); });
+
+  function check() {
+    var g = grams(), c = cubes(g);
+    var any = false; for (var k in n) if (n[k]) any = true;
+    if (!any && g === 0) { $("e-none").style.display = "block"; $("e-none").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    $("r-n").textContent = c % 1 ? (Math.floor(c) ? Math.floor(c) + "個半" : "半") : String(c);
+    // 角砂糖を並べる（10個を超えた分はオレンジ・40個まで）
+    var h = "", whole = Math.floor(c), half = c % 1 !== 0, shown = Math.min(whole, 40);
+    for (var i = 0; i < shown; i++) h += '<i class="' + (i >= 10 ? "over" : "") + '"></i>';
+    if (half && whole < 40) h += '<i class="half' + (whole >= 10 ? " over" : "") + '"></i>';
+    if (whole > 40) h += "<em>＋" + (whole - 40) + "個</em>";
+    $("cubes").innerHTML = h;
+    $("r-mark").style.left = Math.max(1, Math.min(99, c / 20 * 100)) + "%";
+    var v = $("verdict"), label, cls, msg;
+    if (c === 0) { label = "ほぼゼロ"; cls = "green"; msg = "きのうの飲み物の砂糖は、角砂糖半個にもなりませんでした。"; }
+    else if (c <= 5) { label = "目安の中"; cls = "green"; msg = "飲み物だけで" + fmt(c) + "。WHOの「できれば5個まで」の中です。"; }
+    else if (c <= 10) { label = "できれば減らしたい"; cls = "yellow"; msg = "飲み物だけで" + fmt(c) + "。「できれば5個まで」は超えて、「10個まで」の中です。"; }
+    else { label = "飲み物だけで上限超え"; cls = "orange"; msg = "飲み物だけで" + fmt(c) + "。WHOの目安「10個まで」を超えています。"; }
+    v.textContent = label; v.className = "verdict c-" + cls;
+    $("v-msg").textContent = msg;
+    YH.renderVideos($("videos"), "sugar");
+    var res = $("result"); res.style.display = "block";
+    res.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("go").addEventListener("click", check);
+  $("again").addEventListener("click", function () { $("result").style.display = "none"; window.scrollTo({ top: 0, behavior: "smooth" }); });
+  refresh();
+})();
+</script>
+</body>
+</html>
